@@ -8,8 +8,8 @@ from .core.helper import reader
 
 # argparse
 p = argparse.ArgumentParser()
-p.add_argument('-p', '--payload', required=True, help='Specify payload then we roll')
 p.add_argument('-l', '--url-list', required=True, help='Specify URL list')
+p.add_argument('-p', '--payload', default='fuckhackerone', help='Specify payload then we roll')
 p.add_argument('-k', '--keyword', default='FUZZ', help='URL keyword, default is FUZZ')
 # p.add_argument('-d', '--url-dir', help='Specify URL Directory')
 

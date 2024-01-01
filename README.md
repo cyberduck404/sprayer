@@ -10,5 +10,5 @@ pip3 install .
 
 ### How to Use
 ```bash
-sprayer -p fuckhackerone -l <URLLIST>
+sprayer -l <URLLIST>
 ```
