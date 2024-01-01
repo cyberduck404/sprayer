@@ -1,6 +1,9 @@
 #!/usr/bin/python3
-import os, sys
-import urllib.parse, argparse, gc, logging, json
+# todo://
+#   add proxy
+#   -d
+import argparse
+import urllib.parse
 from threading import Thread
 from .core.http import fetch
 from .core.helper import reader
@@ -12,6 +15,7 @@ p.add_argument('-l', '--url-list', required=True, help='Specify URL list')
 p.add_argument('-p', '--payload', default='fuckhackerone', help='Specify payload then we roll')
 p.add_argument('-k', '--keyword', default='FUZZ', help='URL keyword, default is FUZZ')
 # p.add_argument('-d', '--url-dir', help='Specify URL Directory')
+p.add_argument('-x', '--proxy', help='Specify your proxy, like http://127.0.0.1:8080')
 
 # let's go!
 def main():
@@ -19,7 +23,13 @@ def main():
     args = p.parse_args()
     payload = args.payload
     url_list = args.url_list
-
+    proxy = args.proxy
+    kwargs = {
+        'headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        },
+        'proxies': {'http': proxy, 'https': proxy}
+    }
     # url encode
     e_payload = urllib.parse.quote(payload)
 
@@ -36,7 +46,7 @@ def main():
     # send requests
     ts = []
     for murl in murls:
-        t = Thread(target=fetch, args=(murl, payload))
+        t = Thread(target=fetch, args=(murl, payload), kwargs=kwargs)
         t.start()
         ts.append(t)
     for t in ts:
