@@ -17,7 +17,7 @@ p.add_argument('-p', '--payload', default='fuckhackerone', help='Specify payload
 p.add_argument('-k', '--keyword', default='FUZZ', help='URL keyword, default is FUZZ')
 # p.add_argument('-d', '--url-dir', help='Specify URL Directory')
 p.add_argument('-x', '--proxy', help='Specify your proxy, like http://127.0.0.1:8080')
-p.add_argument('-mc', '--max-conn', type=int, default=500, help='Max Concurrency')
+p.add_argument('-mc', '--max-conn', type=int, default=64, help='Max Concurrency')
 
 # parse args
 args = p.parse_args()
