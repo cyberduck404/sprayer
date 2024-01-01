@@ -3,7 +3,8 @@ import requests
 from .checker import check_http
 
 
-def fetch(url, payload, **kwargs):
+def fetch(url, payload, sema, **kwargs):
+    sema.acquire()
     try:
         r = requests.get(
             url,
@@ -17,3 +18,4 @@ def fetch(url, payload, **kwargs):
     except requests.exceptions.RequestException as e:
         # sys.stderr.write(f'[!] [{e}] {url}\n')
         pass
+    sema.release()

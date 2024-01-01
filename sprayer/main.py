@@ -5,7 +5,7 @@
 import argparse
 import urllib.parse
 import urllib3
-from threading import Thread
+from threading import Thread, Semaphore
 from .core.http import fetch
 from .core.helper import reader
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -18,6 +18,7 @@ p.add_argument('-p', '--payload', default='fuckhackerone', help='Specify payload
 p.add_argument('-k', '--keyword', default='FUZZ', help='URL keyword, default is FUZZ')
 # p.add_argument('-d', '--url-dir', help='Specify URL Directory')
 p.add_argument('-x', '--proxy', help='Specify your proxy, like http://127.0.0.1:8080')
+p.add_argument('-mc', '--max-conn', type=int, default=500, help='Max Concurrency')
 
 # let's go!
 def main():
@@ -32,6 +33,10 @@ def main():
         },
         'proxies': {'http': proxy, 'https': proxy}
     }
+
+    # sema
+    sema = Semaphore(value=args.max_conn)
+
     # url encode
     e_payload = urllib.parse.quote(payload)
 
@@ -48,7 +53,7 @@ def main():
     # send requests
     ts = []
     for murl in murls:
-        t = Thread(target=fetch, args=(murl, payload), kwargs=kwargs)
+        t = Thread(target=fetch, args=(murl, payload, sema), kwargs=kwargs)
         t.start()
         ts.append(t)
     for t in ts:
