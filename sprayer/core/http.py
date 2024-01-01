@@ -15,4 +15,5 @@ def fetch(url, payload, **kwargs):
         if check_http(r, payload):
             sys.stdout.write(f'{url}\n')
     except requests.exceptions.RequestException as e:
-        sys.stderr.write(f'[!] [{e}] {url}')
+        # sys.stderr.write(f'[!] [{e}] {url}\n')
+        pass

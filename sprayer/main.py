@@ -4,9 +4,11 @@
 #   -d
 import argparse
 import urllib.parse
+import urllib3
 from threading import Thread
 from .core.http import fetch
 from .core.helper import reader
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 # argparse
