@@ -19,7 +19,6 @@ def main():
     args = p.parse_args()
     payload = args.payload
     url_list = args.url_list
-    keyword = args.keyword
 
     # url encode
     e_payload = urllib.parse.quote(payload)
@@ -32,7 +31,7 @@ def main():
     # replace payload with keyword
     murls = []
     for url in urls:
-        murls.append(url.replace('FUZZ', e_payload))
+        murls.append(url.replace(args.keyword, e_payload))
 
     # send requests
     ts = []
