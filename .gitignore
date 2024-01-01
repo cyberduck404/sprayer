@@ -1,2 +1,4 @@
 test_urls.txt
 .idea
+build
+sprayer.egg-info

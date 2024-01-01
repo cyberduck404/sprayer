@@ -1,6 +1,6 @@
 import sys
 import requests
-from core.checker import check_http
+from .checker import check_http
 
 
 def fetch(url, payload):

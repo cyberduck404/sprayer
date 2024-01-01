@@ -2,8 +2,8 @@
 import os, sys
 import urllib.parse, argparse, gc, logging, json
 from threading import Thread
-from core.http import fetch
-from core.helper import reader
+from .core.http import fetch
+from .core.helper import reader
 
 
 # argparse
