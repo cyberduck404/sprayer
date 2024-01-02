@@ -18,8 +18,8 @@ setup(
     url='https://github.com/cyberduck404/sprayer',
     license='MIT',
     author='cyberduck404',
-    author_email='',
-    description='Dig parameters from wayback machine',
+    author_email='re4son.t@yandex.com',
+    description='Dig reflection from urls',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown'
 )

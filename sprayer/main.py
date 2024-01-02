@@ -3,17 +3,15 @@
 #   -d
 import argparse, gc
 import urllib.parse
-import urllib3
 import asyncio, aiohttp
-from .core.http import async_request
+from .core.http_client import async_request
 from .core.helper import reader
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 # argparse
 p = argparse.ArgumentParser()
 p.add_argument('-l', '--url-list', required=True, help='Specify URL list')
-p.add_argument('-p', '--payload', default='fuckhackerone', help='Specify payload then we roll')
+p.add_argument('-p', '--payload', required=True, help='Specify payload then we roll')
 p.add_argument('-k', '--keyword', default='FUZZ', help='URL keyword, default is FUZZ')
 # p.add_argument('-d', '--url-dir', help='Specify URL Directory')
 p.add_argument('-x', '--proxy', help='Specify your proxy, like http://127.0.0.1:8080')
@@ -30,33 +28,31 @@ proxy = args.proxy
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 }
+# url encode
+e_payload = urllib.parse.quote(payload)
+
+# read urls
+urls = []
+if url_list:
+    urls += reader(url_list)
+
+# replace payload with keyword
+murls = []
+for url in urls:
+    murls.append(url.replace(args.keyword, e_payload))
+length = len(murls)
 
 # let's go!
 async def main():
-    # url encode
-    e_payload = urllib.parse.quote(payload)
-
-    # read urls
-    urls = []
-    if url_list:
-        urls += reader(url_list)
-
-    # replace payload with keyword
-    murls = []
-    for url in urls:
-        murls.append(url.replace(args.keyword, e_payload))
-    length = len(murls)
-
-    # send requests
     count = 0
     timeout = aiohttp.ClientTimeout(total=single_waiting, sock_connect=single_waiting, sock_read=single_waiting)
     connector = aiohttp.TCPConnector(limit=max_conn, ssl=False)
     async with aiohttp.ClientSession(headers=headers, connector=connector, timeout=timeout) as s:
         while count < length:
             tasks = []
-            sliced = murls[count:count + max_conn]
-            for domain in sliced:
-                tasks.append(asyncio.ensure_future(async_request(s, domain, payload, proxy=args.proxy)))
+            sliced = murls[count:count+max_conn]
+            for url in sliced:
+                tasks.append(asyncio.ensure_future(async_request(s, url, payload, proxy=args.proxy)))
             await asyncio.gather(*tasks)
             s.cookie_jar.clear()
 
@@ -66,5 +62,4 @@ async def main():
             count += max_conn
 
 
-if __name__ == '__main__':
-    asyncio.run(main())
+asyncio.run(main())
