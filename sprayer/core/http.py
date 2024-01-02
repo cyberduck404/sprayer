@@ -1,21 +1,31 @@
 import sys
-import requests
+import asyncio, aiohttp
 from .checker import check_http
 
 
-def fetch(url, payload, sema, **kwargs):
-    sema.acquire()
+async def async_request(session, url, payload, proxy=None):
     try:
-        r = requests.get(
-            url,
-            headers=kwargs.get('headers', {}),
-            proxies=kwargs.get('proxies', {}),
-            verify=False,
-            allow_redirects=True
-        )
-        if check_http(r, payload):
-            sys.stdout.write(f'{url}\n')
-    except requests.exceptions.RequestException as e:
-        # sys.stderr.write(f'[!] [{e}] {url}\n')
-        pass
-    sema.release()
+        async with session.get(url, proxy=proxy, allow_redirects=False) as resp:
+            text = await resp.text()
+            if check_http(text, payload):
+                sys.stdout.write(f'{url}\n')
+    except (
+        asyncio.TimeoutError,
+        aiohttp.ClientConnectorCertificateError,
+        aiohttp.ClientConnectionError,
+        aiohttp.ClientOSError,
+        aiohttp.ClientConnectorError,
+        aiohttp.ClientProxyConnectionError,
+        aiohttp.ClientSSLError,
+        aiohttp.ClientConnectorSSLError,
+        aiohttp.ClientPayloadError,
+        aiohttp.ClientResponseError,
+        aiohttp.ClientHttpProxyError,
+        aiohttp.WSServerHandshakeError,
+        aiohttp.ContentTypeError,
+    ) as e:
+        ...
+    except RuntimeError as e:
+        ...
+    except UnicodeDecodeError as e:
+        ...

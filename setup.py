@@ -2,11 +2,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='sprayer',
-    version='0.0.1',
+    version='0.0.2',
     packages=find_packages(),
     install_requires=[
         'requests',
-        'urllib3'
+        'urllib3',
+        'aiohttp',
+        'asyncio'
     ],
     entry_points={
         'console_scripts': [

@@ -1,2 +1,2 @@
-def check_http(r, payload):
-    return payload in r.text
+def check_http(text, payload):
+    return payload in text
